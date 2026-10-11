@@ -25,18 +25,76 @@
 - **Infrastructure:** Repositories, Interfaces, BaseRepository, PagedList, DataSeeder, AppDbContext, DI per layer, GlobalUsings
 - **Domain:** BaseEntity, Entities, GlobalUsings
 
-## Run Database Migrations
+## How to Run
 
-Run these commands from the **solution root**.
+### 1. Configure `appsettings.json`
 
-**Add a migration:**
+Update the configuration in your API project's `appsettings.json` file.
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": ""
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "EmailConfiguration": {
+    "From": "",
+    "SmtpServer": "smtp.gmail.com",
+    "Port": 465,
+    "UserName": "",
+    "Password": "",
+    "EnableSsl": true
+  },
+ "CloudinaryConfigurations": {
+   "CloudName": "",
+   "ApiKey": "",
+   "ApiSecret": ""
+ },
+  "AllowedHosts": "*"
+}
+ ```
+
+### 2. Apply Database Migrations
+
+Run the following commands from the **solution root directory**.
+
+**Add a migration** (only if no migrations exist):
 
 ```powershell
 dotnet ef migrations add Mig_1 --project .\Infrastructure\Infrastructure.csproj --startup-project .\API\API.csproj
 ```
 
-**Apply migrations:**
+**Update the database:**
 
 ```powershell
 dotnet ef database update --project .\Infrastructure\Infrastructure.csproj --startup-project .\API\API.csproj
 ```
+
+### 3. Run the API
+
+Run the API project using Visual Studio or the .NET CLI.
+
+### 4. Install Frontend Dependencies
+
+Navigate to the `WEB` directory and install the dependencies:
+
+```bash
+cd WEB
+npm install
+```
+
+### 5. Run the Frontend
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The frontend will be available at **https://localhost:3000**.
+
