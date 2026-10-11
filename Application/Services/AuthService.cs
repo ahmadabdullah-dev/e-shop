@@ -11,6 +11,7 @@ public class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
     private readonly IEmailService _emailService;
     private readonly IUserService _userService;
+    private readonly IFileService _fileService;
 
 
     public AuthService(SignInManager<AppUser> signInManager,
@@ -18,7 +19,8 @@ public class AuthService : IAuthService
         ApplicationDbContext dbContext,
         ILogger<AuthService> logger,
         IEmailService emailService,
-        IUserService userService)
+        IUserService userService,
+        IFileService fileService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -26,6 +28,7 @@ public class AuthService : IAuthService
         _logger = logger;
         _emailService = emailService;
         _userService = userService;
+        _fileService = fileService;
     }
     public async Task<Result<string>> LoginAsync(LoginDto dto)
     {
@@ -52,10 +55,26 @@ public class AuthService : IAuthService
     }
     public async Task<Result<string>> RegisterAsync(RegisterDto dto)
     {
+        string? imageUrl = null;
+        string? imagePublicId = null;
+
+        if (dto.Image is not null)
+        {
+            var imageResult = await _fileService.UploadImage(dto.Image);
+
+            if (!imageResult.IsSuccess)
+                return Result<string>.Failure(imageResult.Error!, 400);
+
+            imageUrl = imageResult.Value!.Url;
+            imagePublicId = imageResult.Value.PublicId;
+        }
+
         var newUser = new AppUser
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
+            ImageUrl = imageUrl,
+            ImagePublicId = imagePublicId,
             UserName = dto.Email,
             Email = dto.Email,
             EmailConfirmed = false,
@@ -79,7 +98,17 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, $"Failed to register user with email {dto.Email}");
+
+            if (imagePublicId is not null)
+            {
+                var cleanup = await _fileService.DeleteFile(imagePublicId);
+                if (!cleanup.IsSuccess)
+                    _logger.LogWarning($"Orphaned Cloudinary image {imagePublicId}");
+            }
+
             await _userManager.DeleteAsync(newUser);
+
             return Result<string>.Failure(ex.Message, 400);
         }
         return Result<string>.Success("Registered successfully.");

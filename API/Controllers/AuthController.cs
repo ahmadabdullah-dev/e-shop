@@ -21,7 +21,7 @@ public class AuthController : BaseApiController
     }
     [EnableRateLimiting("authLimiter")]
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
+    public async Task<IActionResult> Register([FromForm] RegisterDto dto)
     {
         var result = await _authService.RegisterAsync(dto);
 

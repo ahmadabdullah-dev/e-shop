@@ -1,4 +1,6 @@
-﻿namespace Application.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Application.Dtos;
 
 public class LoginDto
 {
@@ -8,6 +10,7 @@ public class LoginDto
 }
 public class RegisterDto
 {
+    public IFormFile? Image { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Email { get; set; }
