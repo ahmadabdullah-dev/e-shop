@@ -19,7 +19,7 @@ public class UserController : BaseApiController
         return HandleResult(result);
     }
     [HttpPut("current")]
-    public async Task<IActionResult> UpdateCurrentUser(UpdateUserDto dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateCurrentUser([FromForm] UpdateUserDto dto, CancellationToken ct)
     {
         var result = await _userService.UpdateCurrentUserAsync(dto, ct);
         return HandleResult(result);
