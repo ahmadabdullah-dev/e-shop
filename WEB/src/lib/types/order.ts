@@ -6,3 +6,11 @@ export type CreateOrderDto = {
   shippingAddress: string,
   products: ProductOrderItemDto[]
 }
+export type OrderDto = {
+  id: string,
+  userId: string,
+  shippingAddress: string,
+  products: ProductOrderItemDto[],
+  totalPrice: string,
+  createdDate: string
+}
