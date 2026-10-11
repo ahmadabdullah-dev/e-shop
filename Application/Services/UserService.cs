@@ -59,6 +59,7 @@ public class UserService : IUserService
             Email = user.Email!,
             IsEmailConfirmed = user.EmailConfirmed,
             Role = role,
+            ImageUrl = user.ImageUrl
         };
         return Result<UserDto>.Success(dto);
     }

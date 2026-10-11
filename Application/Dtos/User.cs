@@ -8,6 +8,8 @@ public class UserDto
     public string Email { get; set; } = null!;
     public bool IsEmailConfirmed { get; set; } 
     public string Role { get; set; } = null!;
+    public string? ImageUrl { get; set; }
+
 }
 public class UpdateUserDto
 {
