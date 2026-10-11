@@ -1,4 +1,8 @@
-﻿namespace API;
+﻿using Microsoft.AspNetCore.RateLimiting;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Threading.RateLimiting;
+
+namespace API;
 
 public static class DependencyInjection
 {
@@ -23,6 +27,34 @@ public static class DependencyInjection
                           .AllowAnyMethod()
                           .AllowCredentials();
                 });
+        }); 
+      
+        //If anyone makes a request, everyone else gets blocked for 10 seconds.
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("authLimiter", opt =>
+            {
+                opt.Window = TimeSpan.FromSeconds(10);
+                opt.PermitLimit = 3;
+                opt.QueueLimit = 0;
+            });
+
+            options.RejectionStatusCode = 429;
+        });
+
+        // one limit per user (or per IP if not logged in). Each person gets their own 1 request per 30 seconds and doesn’t affect others.
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy("notificationLimiter", context =>
+                RateLimitPartition.GetFixedWindowLimiter(context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+                    _ => new FixedWindowRateLimiterOptions
+                    {
+                        Window = TimeSpan.FromSeconds(30),
+                        PermitLimit = 1,
+                        QueueLimit = 0
+                    }));
+
+            options.RejectionStatusCode = 429;
         });
 
         return services;

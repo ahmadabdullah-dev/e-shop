@@ -16,6 +16,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+app.UseRateLimiter();
+
 await app.Services.SeedDataAsync();
 
 app.UseHttpsRedirection();
