@@ -84,7 +84,6 @@ function ProfileSkeleton() {
 
 export default function MyProfile() {
   const user = useCurrentUser();
-
   if (user.isLoading) {
     return <ProfileSkeleton />;
   }
@@ -155,6 +154,8 @@ export default function MyProfile() {
             }}
           >
             <Avatar
+              src={data.imageUrl ?? undefined}
+              alt={fullName || data.email}
               sx={{
                 width: 96,
                 height: 96,
@@ -169,15 +170,14 @@ export default function MyProfile() {
             >
               {initials}
             </Avatar>
-            <Stack direction="row"  spacing={1} sx={{alignItems: "center" }}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
               <Button
                 component={RouterLink}
                 to="/settings"
                 variant="outlined"
                 startIcon={<SettingsOutlinedIcon />}
-              sx={{px:0}}
-              >
-              </Button>
+                sx={{ px: 0 }}
+              ></Button>
               <LogoutButton />
             </Stack>
           </Stack>
