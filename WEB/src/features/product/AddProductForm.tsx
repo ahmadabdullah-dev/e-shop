@@ -12,20 +12,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useAddProduct } from "../../lib/hooks/useProduct";
+import type { AddProductDto } from "../../lib/types/product";
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-type FormValues = {
-  name: string;
-  description: string;
-  price: number;
-  image: File | null;
-};
 
 type Feedback = { severity: "success" | "error"; message: string };
 
-const defaultValues: FormValues = {
+const defaultValues: AddProductDto = {
   name: "",
   description: "",
   price: 0,
@@ -44,7 +39,7 @@ export default function AddProductForm() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ defaultValues });
+  } = useForm<AddProductDto>({ defaultValues });
 
   const updatePreview = (file: File | null) =>
     setPreview(file ? URL.createObjectURL(file) : null);
@@ -55,13 +50,13 @@ export default function AddProductForm() {
     };
   }, [preview]);
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: AddProductDto) => {
     setFeedback(null);
 
     mutate(
       {
         name: values.name.trim(),
-        description: values.description.trim() || undefined,
+        description: values.description?.trim() || undefined,
         price: values.price,
         image: values.image ?? undefined, 
       },
