@@ -4,6 +4,7 @@ export type LoginDto = {
   rememberMe: boolean;
 };
 export type RegisterDto = {
+  image?: File | null;
   FirstName: string;
   LastName: string;
   Email: string;
