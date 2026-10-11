@@ -44,7 +44,9 @@ export const useUpdateCurrentUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (dto: UpdateUserDto) => {
-      const response = await agent.put<string>("/User/current", dto);
+      const response = await agent.put<string>("/User/current", dto, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return response.data;
     },
     onSuccess: () => {

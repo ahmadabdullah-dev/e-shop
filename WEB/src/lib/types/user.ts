@@ -17,9 +17,10 @@ export type UpdateCurrentEmailDto = {
 }
 
 export type UpdateUserDto = {
-    firstName: string | null,
-    lastName: string | null
-}
+  firstName: string | null;
+  lastName: string | null;
+  image: File | null;
+};
 export type UpdateCurrentUserNameDto = {
   newUserName: string;
 }
