@@ -17,7 +17,6 @@ import UpdateProduct from "../../features/product/UpdateProduct";
 import RequireAdminRole from "./RequireAdminRole";
 import AddProductForm from "../../features/product/AddProductForm";
 import Settings from "../../features/user/Settings";
-import UpdateEmail from "../../features/user/Email/UpdateEmail";
 import CurrentBasket from "../../features/Basket/CurrentBasket";
 import CreateOrder from "../../features/order/CreateOrder";
 import CurrentUserOrders from "../../features/order/CurrentUserOrders";
@@ -43,7 +42,6 @@ export const routes = createBrowserRouter([
                 ],
               },
               { path: "settings", element: <Settings /> },
-              { path: "update-email", element: <UpdateEmail /> },
               { path: "dashboard", element: <Dashboard /> },
               { path: "my-profile", element: <MyProfile /> },
               { path: "basket", element: <CurrentBasket /> },
