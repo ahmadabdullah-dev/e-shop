@@ -85,7 +85,7 @@ export default function TemporaryDrawer({ items }: DrawerProps) {
                 letterSpacing: "0.18em",
               }}
             >
-              Url Shortener
+              E Shop
             </Typography>
             <IconButton
               onClick={toggleDrawer(false)}
