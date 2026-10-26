@@ -60,6 +60,7 @@ public class UserService : IUserService
             FirstName = user.FirstName!,
             LastName = user.LastName!,
             Email = user.Email!,
+            UserName = user.UserName ?? "",
             IsEmailConfirmed = user.EmailConfirmed,
             Role = role,
             ImageUrl = user.ImageUrl

@@ -24,6 +24,7 @@ function getInitials(
   firstName?: string | null,
   lastName?: string | null,
   email?: string | null,
+  userName?: string | null,
 ) {
   const fromName = [firstName, lastName]
     .filter(Boolean)
@@ -83,6 +84,7 @@ export default function MyProfile() {
 
   if (user.isLoading) return <ProfileSkeleton />;
 
+  console.log(user);
   if (user.isError) {
     return (
       <ProfileShell>
@@ -159,6 +161,11 @@ export default function MyProfile() {
         <Divider sx={{ my: 3 }} />
 
         <Stack divider={<Divider flexItem />}>
+          <ProfileField
+          icon= {<PersonOutlineIcon/>}
+            label="UserName"
+            value={data.userName}
+          />
           <ProfileField
             icon={<PersonOutlineIcon />}
             label="Full name"
