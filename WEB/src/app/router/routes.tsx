@@ -20,6 +20,7 @@ import UserSettings from "../../features/user/UserSettings";
 import CurrentBasket from "../../features/Basket/CurrentBasket";
 import CreateOrder from "../../features/order/CreateOrder";
 import CurrentUserOrders from "../../features/order/CurrentUserOrders";
+import AdminDashboard from "../../features/admin/AdminDashboard";
 
 export const routes = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ export const routes = createBrowserRouter([
                 children: [
                   { path: "product/update/:id", element: <UpdateProduct /> },
                   { path: "product/add", element: <AddProductForm /> },
+                  { path: "admin", element: <AdminDashboard /> },
                 ],
               },
               { path: "user/settings", element: <UserSettings /> },
