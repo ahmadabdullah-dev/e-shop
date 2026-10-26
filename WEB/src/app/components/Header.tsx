@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { label: "Basket", href: "/basket" },
   { label: "Orders", href: "/orders" },
   { label: "My Profile", href: "/my-profile" },
+  { label: "Admin", href: "/admin" },
 ];
 
 export default function Header() {
