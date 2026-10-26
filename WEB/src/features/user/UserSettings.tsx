@@ -11,7 +11,7 @@ const sections = [
   { label: "Email", content: <UpdateEmail /> },
 ];
 
-export default function Settings() {
+export default function UserSettings() {
   const [tab, setTab] = useState(0);
 
   return (
@@ -26,9 +26,7 @@ export default function Settings() {
         </Container>
       </Box>
 
-      <Container maxWidth="sm">
-        {sections[tab].content}
-      </Container>
+      <Container maxWidth="sm">{sections[tab].content}</Container>
     </Box>
   );
 }

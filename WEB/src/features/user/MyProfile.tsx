@@ -24,7 +24,6 @@ function getInitials(
   firstName?: string | null,
   lastName?: string | null,
   email?: string | null,
-  userName?: string | null,
 ) {
   const fromName = [firstName, lastName]
     .filter(Boolean)

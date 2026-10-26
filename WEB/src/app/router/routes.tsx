@@ -16,7 +16,7 @@ import Product from "../../features/product/ProductDetails";
 import UpdateProduct from "../../features/product/UpdateProduct";
 import RequireAdminRole from "./RequireAdminRole";
 import AddProductForm from "../../features/product/AddProductForm";
-import Settings from "../../features/user/Settings";
+import UserSettings from "../../features/user/UserSettings";
 import CurrentBasket from "../../features/Basket/CurrentBasket";
 import CreateOrder from "../../features/order/CreateOrder";
 import CurrentUserOrders from "../../features/order/CurrentUserOrders";
@@ -41,12 +41,13 @@ export const routes = createBrowserRouter([
                   { path: "product/add", element: <AddProductForm /> },
                 ],
               },
-              { path: "settings", element: <Settings /> },
+              { path: "user/settings", element: <UserSettings /> },
+              { path: "settings", element: <UserSettings /> },
               { path: "dashboard", element: <Dashboard /> },
               { path: "my-profile", element: <MyProfile /> },
               { path: "basket", element: <CurrentBasket /> },
-              {path: "checkout", element: <CreateOrder/>},
-              {path: "orders", element: <CurrentUserOrders/>}
+              { path: "checkout", element: <CreateOrder /> },
+              { path: "orders", element: <CurrentUserOrders /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
