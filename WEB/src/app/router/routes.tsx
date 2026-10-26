@@ -10,7 +10,6 @@ import ResetPasswordForm from "../../features/auth/ResetPasswordForm";
 import RequireAuth from "./RequireAuth";
 import ConfirmEmailForm from "../../features/auth/ConfirmEmailForm";
 import RequireConfirmedEmail from "./RequireConfirmedEmail";
-import Dashboard from "../Dashboard";
 import MyProfile from "../../features/user/MyProfile";
 import Product from "../../features/product/ProductDetails";
 import UpdateProduct from "../../features/product/UpdateProduct";
@@ -21,6 +20,7 @@ import CurrentBasket from "../../features/Basket/CurrentBasket";
 import CreateOrder from "../../features/order/CreateOrder";
 import CurrentUserOrders from "../../features/order/CurrentUserOrders";
 import AdminDashboard from "../../features/admin/AdminDashboard";
+import ProductsDashboard from "../../features/product/ProductsDashboard";
 
 export const routes = createBrowserRouter([
   {
@@ -29,6 +29,8 @@ export const routes = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <LandingPage /> },
+      { path: "/products", element: <ProductsDashboard /> },
+
       {
         element: <RequireAuth />,
         children: [
@@ -45,7 +47,7 @@ export const routes = createBrowserRouter([
               },
               { path: "user/settings", element: <UserSettings /> },
               { path: "settings", element: <UserSettings /> },
-              { path: "dashboard", element: <Dashboard /> },
+              { path: "/", element: <LandingPage /> },
               { path: "my-profile", element: <MyProfile /> },
               { path: "basket", element: <CurrentBasket /> },
               { path: "checkout", element: <CreateOrder /> },

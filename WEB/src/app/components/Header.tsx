@@ -11,10 +11,10 @@ import { useEffect, useState } from "react";
 import AppLogoWithName from "./AppLogoWithName";
 
 const NAV_LINKS = [
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "Products", href: "/products" },
+  { label: "Basket", href: "/basket" },
+  { label: "Orders", href: "/orders" },
   { label: "My Profile", href: "/my-profile" },
-  { label: "Basket", href:"/basket"},
-  { label: "Orders", href: "/orders"}
 ];
 
 export default function Header() {
