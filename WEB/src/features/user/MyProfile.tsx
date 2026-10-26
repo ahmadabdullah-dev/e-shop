@@ -6,52 +6,30 @@ import {
   Button,
   Container,
   Divider,
+  IconButton,
   Paper,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlineOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { Link as RouterLink } from "react-router";
 import { useCurrentUser } from "../../lib/hooks/useUser";
 import LogoutButton from "../auth/LogoutButton";
-import { Link as RouterLink } from "react-router";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
-interface ProfileFieldProps {
-  icon: ReactNode;
-  label: string;
-  value?: string | number | null;
-}
-
-function ProfileField({ icon, label, value }: ProfileFieldProps) {
-  return (
-    <Stack direction="row" spacing={2} sx={{ alignItems: "center", py: 2 }}>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          borderRadius: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "action.hover",
-          color: "text.secondary",
-          flexShrink: 0,
-        }}
-      >
-        {icon}
-      </Box>
-      <Box sx={{ minWidth: 0 }}>
-        <Typography variant="caption" color="text.secondary">
-          {label}
-        </Typography>
-        <Typography variant="body1" noWrap sx={{ fontWeight: 500 }}>
-          {value || "Not provided"}
-        </Typography>
-      </Box>
-    </Stack>
-  );
+function getInitials(
+  firstName?: string | null,
+  lastName?: string | null,
+  email?: string | null,
+) {
+  const fromName = [firstName, lastName]
+    .filter(Boolean)
+    .map((n) => n![0])
+    .join("");
+  return (fromName || email?.[0] || "?").toUpperCase();
 }
 
 function ProfileShell({ children }: { children: ReactNode }) {
@@ -62,21 +40,39 @@ function ProfileShell({ children }: { children: ReactNode }) {
   );
 }
 
+function ProfileField({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value?: string | null;
+}) {
+  return (
+    <Stack direction="row" spacing={2} sx={{ alignItems: "center", py: 2 }}>
+      <Box sx={{ display: "flex", color: "text.secondary" }}>{icon}</Box>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography variant="caption" color="text.secondary">
+          {label}
+        </Typography>
+        <Typography noWrap sx={{ fontWeight: 500 }}>
+          {value || "Not provided"}
+        </Typography>
+      </Box>
+    </Stack>
+  );
+}
+
 function ProfileSkeleton() {
   return (
     <ProfileShell>
-      <Paper
-        sx={{
-          p: { xs: 3, sm: 4 },
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Stack spacing={2} sx={{ alignItems: "center", mb: 3 }}>
-          <Skeleton variant="circular" width={88} height={88} />
+      <Paper variant="outlined" sx={{ p: { xs: 2.5, sm: 4 } }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+          <Skeleton variant="circular" width={72} height={72} />
           <Skeleton variant="text" width={160} height={32} />
         </Stack>
-        <Skeleton variant="rounded" height={56} />
+        <Skeleton variant="rounded" height={120} sx={{ mt: 3 }} />
       </Paper>
     </ProfileShell>
   );
@@ -84,9 +80,8 @@ function ProfileSkeleton() {
 
 export default function MyProfile() {
   const user = useCurrentUser();
-  if (user.isLoading) {
-    return <ProfileSkeleton />;
-  }
+
+  if (user.isLoading) return <ProfileSkeleton />;
 
   if (user.isError) {
     return (
@@ -119,97 +114,62 @@ export default function MyProfile() {
   }
 
   const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ");
-  const initials =
-    [data.firstName, data.lastName]
-      .filter(Boolean)
-      .map((n) => n![0])
-      .join("")
-      .toUpperCase() ||
-    data.email?.[0]?.toUpperCase() ||
-    "?";
 
   return (
     <ProfileShell>
-      <Paper
-        sx={{
-          overflow: "hidden",
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Box
-          sx={{
-            height: 96,
-            bgcolor: "primary.main",
-            opacity: 0.9,
-          }}
-        />
-
-        <Box sx={{ px: { xs: 3, sm: 4 }, pb: { xs: 3, sm: 4 } }}>
-          <Stack
-            direction="row"
+      <Paper variant="outlined" sx={{ p: { xs: 2.5, sm: 4 } }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+          <Avatar
+            src={data.imageUrl ?? undefined}
+            alt={fullName || data.email}
             sx={{
-              alignItems: "flex-end",
-              justifyContent: "space-between",
+              width: 72,
+              height: 72,
+              fontSize: 28,
+              fontWeight: 600,
+              bgcolor: "primary.main",
             }}
           >
-            <Avatar
-              src={data.imageUrl ?? undefined}
-              alt={fullName || data.email}
-              sx={{
-                width: 96,
-                height: 96,
-                fontSize: 36,
-                fontWeight: 700,
-                bgcolor: "background.paper",
-                color: "primary.main",
-                border: "4px solid",
-                borderColor: "background.paper",
-                boxShadow: 1,
-              }}
-            >
-              {initials}
-            </Avatar>
-            <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-              <Button
-                component={RouterLink}
-                to="/settings"
-                variant="outlined"
-                startIcon={<SettingsOutlinedIcon />}
-                sx={{ px: 0 }}
-              ></Button>
-              <LogoutButton />
-            </Stack>
-          </Stack>
+            {getInitials(data.firstName, data.lastName, data.email)}
+          </Avatar>
 
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="h5"
+            component="h1"
+            noWrap
+            sx={{ flex: 1, minWidth: 0, fontWeight: 700 }}
+          >
             {fullName || "Your profile"}
           </Typography>
-          {data.email && (
-            <Typography variant="body2" color="text.secondary">
-              {data.email}
-            </Typography>
-          )}
 
-          <Divider sx={{ my: 3 }} />
-
-          <Typography variant="subtitle2" color="text.secondary">
-            Account details
-          </Typography>
-
-          <Stack divider={<Divider flexItem />}>
-            <ProfileField
-              icon={<PersonOutlineIcon fontSize="small" />}
-              label="Full name"
-              value={fullName}
-            />
-            <ProfileField
-              icon={<EmailOutlinedIcon fontSize="small" />}
-              label="Email"
-              value={data.email}
-            />
+          <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
+            <Tooltip title="Settings">
+              <IconButton
+                component={RouterLink}
+                to="/user/settings"
+                aria-label="Settings"
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <LogoutButton />
           </Stack>
-        </Box>
+        </Stack>
+
+        <Divider sx={{ my: 3 }} />
+
+        <Stack divider={<Divider flexItem />}>
+          <ProfileField
+            icon={<PersonOutlineIcon />}
+            label="Full name"
+            value={fullName}
+          />
+          <ProfileField
+            icon={<EmailOutlinedIcon />}
+            label="Email"
+            value={data.email}
+          />
+        </Stack>
       </Paper>
     </ProfileShell>
   );
