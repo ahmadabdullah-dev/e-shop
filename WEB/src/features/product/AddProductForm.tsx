@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import {
   Alert,
   Box,
@@ -14,35 +14,32 @@ import {
 import { useAddProduct } from "../../lib/hooks/useAdmin";
 import type { AddProductDto } from "../../lib/types/product";
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-
-type Feedback = { severity: "success" | "error"; message: string };
-
-const defaultValues: AddProductDto = {
+const defaultValues = {
   name: "",
   description: "",
-  price: 0,
+  price: "",
   image: null,
-};
+} as unknown as AddProductDto;
 
 export default function AddProductForm() {
   const { mutate, isPending } = useAddProduct();
-  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [feedback, setFeedback] = useState<{
+    severity: "success" | "error";
+    message: string;
+  } | null>(null);
 
-  const [preview, setPreview] = useState<string | null>(null);
+  const { control, handleSubmit, reset } = useForm<AddProductDto>({
+    defaultValues,
+  });
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<AddProductDto>({ defaultValues });
-
-  const updatePreview = (file: File | null) =>
-    setPreview(file ? URL.createObjectURL(file) : null);
+  const image = useWatch({ control, name: "image" }) as File | null;
+  const preview = useMemo(
+    () => (image ? URL.createObjectURL(image) : null),
+    [image],
+  );
 
   useEffect(() => {
     return () => {
@@ -57,23 +54,19 @@ export default function AddProductForm() {
       {
         name: values.name.trim(),
         description: values.description?.trim() || undefined,
-        price: values.price,
-        image: values.image ?? undefined, 
+        price: Number(values.price),
+        image: values.image ?? undefined,
       },
       {
         onSuccess: (data) => {
+          reset(defaultValues);
           setFeedback({
             severity: "success",
-            message:  typeof data === "string" || typeof data === "number" ? ` ${data})` : "Product added",
+            message: (data as { message?: string })?.message ?? String(data),
           });
-          reset(defaultValues);
-          updatePreview(null);
         },
         onError: (error) =>
-          setFeedback({
-            severity: "error",
-            message: error.message || "Could not add product",
-          }),
+          setFeedback({ severity: "error", message: error.message }),
       },
     );
   };
@@ -100,45 +93,68 @@ export default function AddProductForm() {
             </Alert>
           )}
 
-          <TextField
-            label="Name"
-            fullWidth
-            error={!!errors.name}
-            helperText={errors.name?.message}
-            {...register("name", {
+          <Controller
+            name="name"
+            control={control}
+            rules={{
               required: "Name is required",
               minLength: { value: 2, message: "Use at least 2 characters" },
               maxLength: { value: 150, message: "Use 150 characters or fewer" },
-            })}
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Name"
+                fullWidth
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
           />
 
-          <TextField
-            label="Description"
-            fullWidth
-            multiline
-            minRows={3}
-            error={!!errors.description}
-            helperText={errors.description?.message}
-            {...register("description", {
+          <Controller
+            name="description"
+            control={control}
+            rules={{
               maxLength: {
                 value: 2000,
                 message: "Use 2000 characters or fewer",
               },
-            })}
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Description"
+                fullWidth
+                multiline
+                minRows={3}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
           />
 
-          <TextField
-            label="Price"
-            type="number"
-            fullWidth
-            slotProps={{ htmlInput: { step: "0.01", min: 0 } }}
-            error={!!errors.price}
-            helperText={errors.price?.message}
-            {...register("price", {
-              valueAsNumber: true,
-              min: { value: 0.01, message: "Price must be greater than 0" },
-              max: { value: 1_000_000, message: "Price is too high" },
-            })}
+          <Controller
+            name="price"
+            control={control}
+            rules={{
+              required: "Price is required",
+              validate: (v) =>
+                Number(v) > 0 && Number(v) <= 1_000_000
+                  ? true
+                  : "Price must be between 0.01 and 1,000,000",
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Price"
+                type="number"
+                fullWidth
+                slotProps={{ htmlInput: { step: "0.01", min: 0 } }}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
           />
 
           <Controller
@@ -146,7 +162,7 @@ export default function AddProductForm() {
             control={control}
             rules={{
               validate: (file) => {
-                if (!file) return true; // optional
+                if (!file) return true;
                 if (!ALLOWED_TYPES.includes(file.type))
                   return "Use a JPG, PNG or WEBP image";
                 if (file.size > MAX_IMAGE_SIZE)
@@ -181,22 +197,14 @@ export default function AddProductForm() {
                       type="file"
                       accept={ALLOWED_TYPES.join(",")}
                       onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        onChange(file);
-                        updatePreview(file);
-                        e.target.value = ""; // allows picking the same file again
+                        onChange(e.target.files?.[0] ?? null);
+                        e.target.value = "";
                       }}
                     />
                   </Button>
 
                   {preview && (
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        onChange(null);
-                        updatePreview(null);
-                      }}
-                    >
+                    <Button color="inherit" onClick={() => onChange(null)}>
                       Remove
                     </Button>
                   )}
@@ -220,7 +228,7 @@ export default function AddProductForm() {
             size="large"
             disabled={isPending}
             startIcon={
-              isPending ? <CircularProgress size={18} color="inherit" /> : null
+              isPending && <CircularProgress size={18} color="inherit" />
             }
           >
             {isPending ? "Adding product" : "Add product"}
