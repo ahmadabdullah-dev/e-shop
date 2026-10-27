@@ -14,9 +14,8 @@ import {
 } from "@mui/material";
 import {
   useGetProductById,
-  useUpdateProduct,
 } from "../../lib/hooks/useProduct";
-
+import { useUpdateProduct } from "../../lib/hooks/useAdmin";
 type FormValues = {
   name: string;
   description: string;

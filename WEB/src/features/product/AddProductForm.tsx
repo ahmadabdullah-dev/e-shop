@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useAddProduct } from "../../lib/hooks/useProduct";
+import { useAddProduct } from "../../lib/hooks/useAdmin";
 import type { AddProductDto } from "../../lib/types/product";
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; 

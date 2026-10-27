@@ -1,22 +1,10 @@
-import { useMutation, useQuery, useQueryClient, useQueries } from "@tanstack/react-query";
+import {  useQuery, useQueries } from "@tanstack/react-query";
 import agent from "../api/agent";
 import type {
-  AddProductDto,
   ProductDto,
-  UpdateProductDto,
 } from "../types/product";
 import type { PaginatedList, PaginationParams } from "../types/common";
 
-export const useAddProduct = () => {
-  return useMutation({
-    mutationFn: async (dto: AddProductDto) => {
-      const response = await agent.post("/product/add", dto, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-  });
-};
 export function useGetAllProducts(pagination: PaginationParams) {
   return useQuery({
     queryKey: ["products", pagination],
@@ -43,21 +31,7 @@ export function useGetProductById(id: string) {
     retry: false,
   });
 }
-export const useUpdateProduct = () => {
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (dto: UpdateProductDto) => {
-      const response = await agent.put<string>("/Product/update", dto, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-  });
-};
 
 export function useGetProductsByIds(ids: string[]) {
   return useQueries({
