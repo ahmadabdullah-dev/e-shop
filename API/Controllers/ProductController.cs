@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
@@ -10,14 +9,6 @@ public class ProductController : BaseApiController
     public ProductController(IProductService productService)
     {
         _productService = productService;
-    }
-    [Authorize(Roles = "Admin")]
-    [HttpPost("add")]
-    [RequestSizeLimit(6 * 1024 * 1024)] // 6mb
-    public async Task<IActionResult> AddProduct([FromForm] AddProductDto dto, CancellationToken ct)
-    {
-        var result = await _productService.AddProductAsync(dto, ct);
-        return HandleResult(result);
     }
     [SkipConfirmedEmail]
     [HttpGet("all")]
@@ -33,12 +24,5 @@ public class ProductController : BaseApiController
         var result = await _productService.GetProductByIdAsync(id, ct);
         return HandleResult(result);
     }
-    [HttpPut("update")]
-    [Authorize(Roles = "Admin")]
-    [RequestSizeLimit(6 * 1024 * 1024)] // 6mb  
-    public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductDto dto, CancellationToken ct)
-    {
-        var result = await _productService.UpdateProductAsync(dto, ct);
-        return HandleResult(result);
-    }
+  
 }
