@@ -1,16 +1,16 @@
 export type ProductOrderItemDto = {
-    productId: string,
-    quantity: number
-}
+  productId: string;
+  quantity: number;
+};
 export type CreateOrderDto = {
-  shippingAddress: string,
-  products: ProductOrderItemDto[]
-}
+  shippingAddress: string;
+  products: ProductOrderItemDto[];
+};
 export type OrderDto = {
-  id: string,
-  userId: string,
-  shippingAddress: string,
-  products: ProductOrderItemDto[],
-  totalPrice: string,
-  createdDate: string
-}
+  id: string;
+  userId: string;
+  shippingAddress: string;
+  products: ProductOrderItemDto[];
+  totalPrice: string;
+  createdAt: string;
+};

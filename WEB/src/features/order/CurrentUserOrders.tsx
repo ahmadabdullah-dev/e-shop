@@ -57,8 +57,8 @@ function OrderCard({ order }: { order: OrderDto }) {
             Order {shortId(order.id)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {formatDate(order.createdDate)}
-            {formatDate(order.createdDate) && " • "}
+            {formatDate(order.createdAt)}
+            {formatDate(order.createdAt) && " • "}
             {itemCount} {itemCount === 1 ? "item" : "items"}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
