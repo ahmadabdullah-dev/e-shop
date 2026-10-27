@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
     
 [Authorize]
+[ConfirmedEmail]
 public class OrderController : BaseApiController
 {
     private readonly IOrderService _orderService;

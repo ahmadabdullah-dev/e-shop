@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Controllers;
 
+[ConfirmedEmail]
 [Authorize]
 public class UserController : BaseApiController
 {
@@ -12,6 +13,7 @@ public class UserController : BaseApiController
     {
         _userService = userService;
     }
+    [SkipConfirmedEmail]
     [HttpGet("current")]
     public async Task<IActionResult> GetCurrentUser(CancellationToken ct)
     {

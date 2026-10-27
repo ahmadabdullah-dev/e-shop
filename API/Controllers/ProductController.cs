@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[ConfirmedEmail]
 public class ProductController : BaseApiController
 {
     private readonly IProductService _productService;
@@ -18,12 +19,14 @@ public class ProductController : BaseApiController
         var result = await _productService.AddProductAsync(dto, ct);
         return HandleResult(result);
     }
+    [SkipConfirmedEmail]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllProducts([FromQuery] PaginationParams p, CancellationToken ct)
     {
         var result = await _productService.GetAllProductsAsync(p, ct);
         return HandleResult(result);
     }
+    [SkipConfirmedEmail]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(string id, CancellationToken ct)
     {
