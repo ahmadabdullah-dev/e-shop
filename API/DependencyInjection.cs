@@ -57,6 +57,14 @@ public static class DependencyInjection
             options.RejectionStatusCode = 429;
         });
 
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("requireAdminRole", policy =>
+            {
+                policy.RequireRole("Admin");
+            });
+        });
+
         return services;
     }
 }
