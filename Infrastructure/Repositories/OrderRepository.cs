@@ -18,4 +18,8 @@ public class OrderRepository : Repository<Order>, IOrderRepository
 
         return await PagedList<Order>.CreateAsync(query, p.Page, p.PageSize, ct);
     }
+    public async Task<bool> IsOrderExistsByIdAsync(string orderId, CancellationToken ct)
+    {
+        return await DbSet.AnyAsync(x => x.Id == orderId, ct);
+    }
 }
