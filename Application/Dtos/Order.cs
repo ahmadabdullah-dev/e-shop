@@ -26,5 +26,6 @@ public class OrderDto
     public required string ShippingAddress { get; set; }
     public required List<ProductOrderItemDto> Products { get; set; }
     public required decimal TotalPrice { get; set; }
+    public string OrderStatus { get; set; } = null!;
     public required DateTime CreatedAt { get; set; }
 }

@@ -70,6 +70,7 @@ public class OrderService : IOrderService
                     Quantity = po.Quantity,
                 }).ToList(),
                 TotalPrice = x.Products.Sum(po => po.Quantity * po.UnitPrice),
+                OrderStatus = x.OrderStatus,
                 CreatedAt = x.CreatedAt
             }).ToList(),
         };
@@ -98,6 +99,7 @@ public class OrderService : IOrderService
                     Quantity = po.Quantity,
                 }).ToList(),
                 TotalPrice = x.Products.Sum(po => po.Quantity * po.UnitPrice),
+                OrderStatus = x.OrderStatus,
                 CreatedAt = x.CreatedAt
             }).ToList(),
         };

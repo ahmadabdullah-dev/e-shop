@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.RateLimiting;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 
 namespace API;
@@ -64,6 +65,8 @@ public static class DependencyInjection
                 policy.RequireRole("Admin");
             });
         });
+
+        services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         return services;
     }
