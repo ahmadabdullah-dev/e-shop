@@ -1,15 +1,23 @@
-﻿namespace Application.Services;
+﻿using Microsoft.Extensions.Logging;
+
+namespace Application.Services;
 
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IUserService _userService;
     private readonly IProductService _productService;
-    public OrderService(IOrderRepository orderRepository, IUserService userService, IProductService productService)
+    private readonly ILogger<IOrderService> _logger;
+    public OrderService(IOrderRepository orderRepository, 
+        IUserService userService,
+        IProductService productService,
+        ILogger<IOrderService> logger)
     {
         _orderRepository = orderRepository;
         _userService = userService;
         _productService = productService;
+        _logger = logger;
+        
     }
     public async Task<Result<string>> CreateOrderAsync(CreateOrderDto dto, CancellationToken ct)
     {
@@ -95,5 +103,42 @@ public class OrderService : IOrderService
         };
 
         return Result<PagedList<OrderDto>>.Success(dtos);
+    }
+    public async Task<Result<string>> CancelOrderAsync(string orderId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+       
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
+        var isAdmin = _userService.GetCurrentUserRole() == UserRoles.ADMIN;
+
+        try
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId, ct);
+
+            if (order is null || (order.OrderedUserId != currentUserId && !isAdmin))
+                return Result<string>.Failure("Order not found.", 404);
+
+            if (order.OrderStatus == OrderStatuses.CANCELLED)
+                return Result<string>.Failure("Order is already cancelled.", 409);
+
+            if (order.OrderStatus is OrderStatuses.SHIPPED or OrderStatuses.DELIVERED)
+                return Result<string>.Failure("Order can no longer be cancelled.", 409);
+
+            order.OrderStatus = OrderStatuses.CANCELLED;
+            await _orderRepository.SaveChangesAsync(ct);
+
+            return Result<string>.Success("Order cancelled successfully.");
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while cancelling order {OrderId} by user {UserId}", orderId, currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while cancelling the order.", 500);
+        }
     }
 }

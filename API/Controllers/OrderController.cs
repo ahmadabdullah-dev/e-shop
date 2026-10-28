@@ -25,4 +25,10 @@ public class OrderController : BaseApiController
         var result = await _orderService.GetCurrentUserOrdersAsync(p, ct);
         return HandleResult(result);
     }
+    [HttpPatch("cancel-order/{orderId}")]
+    public async Task<IActionResult> CancelOrder([FromRoute] string orderId , CancellationToken ct)
+    {
+        var result = await _orderService.CancelOrderAsync(orderId, ct);
+        return HandleResult(result);
+    }
 }
