@@ -181,4 +181,45 @@ public class OrderService : IOrderService
             return Result<string>.Failure("An unexpected error occurred while shipping the order.", 500);
         }
     }
+    public async Task<Result<string>> ProcessOrderAsync(string orderId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
+        if (_userService.GetCurrentUserRole() != UserRoles.ADMIN)
+            return Result<string>.Failure("You are not authorized to process orders.", 403);
+
+        try
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId, ct);
+
+            if (order is null)
+                return Result<string>.Failure("Order not found.", 404);
+
+            if (order.OrderStatus == OrderStatuses.CANCELLED)
+                return Result<string>.Failure("Cancelled orders cannot be processed.", 409);
+
+            if (order.OrderStatus != OrderStatuses.PENDING)
+                return Result<string>.Failure($"Order is already {order.OrderStatus} and cannot be processed.", 409);
+
+            order.OrderStatus = OrderStatuses.PROCESSING;
+            await _orderRepository.SaveChangesAsync(ct);
+
+            return Result<string>.Success("Order is now being processed.");
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing order {OrderId} by user {UserId}", orderId, currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while processing the order.", 500);
+        }
+    }
+
+
+
 }
