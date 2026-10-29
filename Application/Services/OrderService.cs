@@ -143,4 +143,42 @@ public class OrderService : IOrderService
             return Result<string>.Failure("An unexpected error occurred while cancelling the order.", 500);
         }
     }
+    public async Task<Result<string>> ShipOrderAsync(string orderId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
+        if (_userService.GetCurrentUserRole() != UserRoles.ADMIN)
+            return Result<string>.Failure("You are not authorized to ship orders.", 403);
+
+        try
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId, ct);
+
+            if (order is null)
+                return Result<string>.Failure("Order not found.", 404);
+
+            if (order.OrderStatus == OrderStatuses.CANCELLED)
+                return Result<string>.Failure("Cancelled orders cannot be shipped.", 409);
+
+            if (order.OrderStatus is OrderStatuses.SHIPPED or OrderStatuses.DELIVERED)
+                return Result<string>.Failure($"Order is already {order.OrderStatus} and cannot be shipped again.", 409);
+
+            order.OrderStatus = OrderStatuses.SHIPPED;
+            await _orderRepository.SaveChangesAsync(ct);
+
+            return Result<string>.Success("Order shipped successfully.");
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while shipping order {OrderId} by user {UserId}", orderId, currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while shipping the order.", 500);
+        }
+    }
 }

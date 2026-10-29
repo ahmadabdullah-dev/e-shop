@@ -38,4 +38,10 @@ public class AdminController : BaseApiController
         var result = await _productService.UpdateProductAsync(dto, ct);
         return HandleResult(result);
     }
+    [HttpPatch("ship-order/{orderId}")]
+    public async Task<IActionResult> ShipOrder([FromRoute] string orderId, CancellationToken ct)
+    {
+        var result = await _orderService.ShipOrderAsync(orderId, ct);
+        return HandleResult(result);
+    }
 }
