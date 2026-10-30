@@ -28,3 +28,42 @@ export const useAddProduct = () => {
     },
   });
 };
+export function useShipOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/ship-order", ${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
+  });
+}
+export function useProcessOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/process-order", ${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
+  });
+}
+export function useDeliverOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/deliver-order", ${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
+  });
+}

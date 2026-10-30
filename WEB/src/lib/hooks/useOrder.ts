@@ -52,3 +52,16 @@ export function useGetOrderById(orderId: string) {
     retry: false,
   });
 }
+export function useCancelOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/cancel-order", ${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
+  });
+}
