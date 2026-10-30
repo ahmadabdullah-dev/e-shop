@@ -21,6 +21,7 @@ import CreateOrder from "../../features/order/CreateOrder";
 import CurrentUserOrders from "../../features/order/CurrentUserOrders";
 import AdminDashboard from "../../features/admin/AdminDashboard";
 import ProductsDashboard from "../../features/product/ProductsDashboard";
+import OrderDetails from "../../features/order/OrderDetails";
 
 export const routes = createBrowserRouter([
   {
@@ -52,6 +53,7 @@ export const routes = createBrowserRouter([
               { path: "basket", element: <CurrentBasket /> },
               { path: "checkout", element: <CreateOrder /> },
               { path: "orders", element: <CurrentUserOrders /> },
+              { path: "order/:id", element: <OrderDetails /> },
             ],
           },
           { path: "/confirm-email", element: <ConfirmEmailForm /> },
@@ -62,7 +64,6 @@ export const routes = createBrowserRouter([
       { path: "forget-password", element: <ForgetPasswordForm /> },
       { path: "reset-password/:email", element: <ResetPasswordForm /> },
       { path: "product/:id", element: <Product /> },
-
       { path: "*", element: <NotFound /> },
     ],
   },

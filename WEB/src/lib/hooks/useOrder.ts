@@ -42,3 +42,13 @@ export function useGetAllOrders(pagination: PaginationParams) {
     retry: false,
   });
 }
+export function useGetOrderById(orderId: string) {
+  return useQuery({
+    queryKey: ["order", orderId ],
+    queryFn: async () => {
+      const response = await agent.get<OrderDto>(`Order/order/${orderId}`);
+      return response.data;
+    },
+    retry: false,
+  });
+}
