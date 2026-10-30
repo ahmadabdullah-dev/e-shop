@@ -260,4 +260,39 @@ public class OrderService : IOrderService
             return Result<string>.Failure("An unexpected error occurred while delivering the order.", 500);
         }
     }
+    public async Task<Result<OrderDto>> GetOrderDetailsAsync(string orderId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+        
+        if (string.IsNullOrWhiteSpace(currentUserId))
+            return Result<OrderDto>.Failure("User is not authenticated.", 401);
+
+        var order = await _orderRepository.GetByIdAsync(orderId, ct);
+        if (order is null)
+            return Result<OrderDto>.Failure("Order not found.", 404);
+
+        var isOwner = order.OrderedUserId == currentUserId;
+        var isAdmin = isOwner || _userService.GetCurrentUserRole() == UserRoles.ADMIN;
+
+        if (!isOwner && !isAdmin)
+        {
+            return Result<OrderDto>.Failure("You are not authorized to view this order.", 403);
+        }
+        var dto = new OrderDto
+        {
+            Id = order.Id,
+            UserId = order.OrderedUserId,
+            ShippingAddress = order.ShippingAddress,
+            Products = order.Products.Select(po => new ProductOrderItemDto
+            {
+                ProductId = po.ProductId,
+                Quantity = po.Quantity,
+            }).ToList(),
+            TotalPrice = order.Products.Sum(po => po.Quantity * po.UnitPrice),
+            OrderStatus = order.OrderStatus,
+            CreatedAt = order.CreatedAt
+        };
+        return Result<OrderDto>.Success(dto);
+
+    }
 }

@@ -9,6 +9,7 @@ public interface IOrderService
     Task<Result<string>> ShipOrderAsync(string orderId, CancellationToken ct);
     Task<Result<string>> ProcessOrderAsync(string orderId, CancellationToken ct);
     Task<Result<string>> DeliverOrderAsync(string orderId, CancellationToken ct);
+    Task<Result<OrderDto>> GetOrderDetailsAsync(string orderId, CancellationToken ct);
 
 
 }
