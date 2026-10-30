@@ -260,6 +260,50 @@ public class OrderService : IOrderService
             return Result<string>.Failure("An unexpected error occurred while delivering the order.", 500);
         }
     }
+    public async Task<Result<string>> PendingOrderAsync(string orderId, CancellationToken ct)
+    {
+        var currentUserId = _userService.GetCurrentUserId();
+
+        if (string.IsNullOrEmpty(currentUserId))
+            return Result<string>.Failure("User is not authenticated.", 401);
+
+        if (_userService.GetCurrentUserRole() != UserRoles.ADMIN)
+            return Result<string>.Failure("You are not authorized to pending orders.", 403);
+
+        try
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId, ct);
+
+            if (order is null)
+                return Result<string>.Failure("Order not found.", 404);
+
+            if (order.OrderStatus == OrderStatuses.CANCELLED)
+                return Result<string>.Failure("Cancelled orders cannot be pending.", 409);
+
+            if (order.OrderStatus == OrderStatuses.PENDING)
+                return Result<string>.Failure("Order has already been pendinged.", 409);
+
+            if ( order.OrderStatus ==  OrderStatuses.SHIPPED)
+                return Result<string>.Failure($"Orders in '{order.OrderStatus}' status cannot be set to pending.", 409);
+          
+            if (order.OrderStatus == OrderStatuses.DELIVERED)
+                return Result<string>.Failure($"Order is already deliveredd.", 409);
+
+            order.OrderStatus = OrderStatuses.PENDING;
+            await _orderRepository.SaveChangesAsync(ct);
+
+            return Result<string>.Success("Order pendinged successfully.");
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while pending order {OrderId} by user {UserId}", orderId, currentUserId);
+            return Result<string>.Failure("An unexpected error occurred while pending the order.", 500);
+        }
+    }
     public async Task<Result<OrderDto>> GetOrderDetailsAsync(string orderId, CancellationToken ct)
     {
         var currentUserId = _userService.GetCurrentUserId();

@@ -37,4 +37,10 @@ public class OrderController : BaseApiController
         var result = await _orderService.GetOrderDetailsAsync(orderId, ct);
         return HandleResult(result);
     }
+    [HttpPatch("pending-order/{orderId}")]
+    public async Task<IActionResult> PendingOrder([FromRoute] string orderId, CancellationToken ct)
+    {
+        var result = await _orderService.PendingOrderAsync(orderId, ct);
+        return HandleResult(result);
+    }
 }
