@@ -38,6 +38,7 @@ export function useShipOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({queryKey: ["order", orderId],});
     },
   });
 }
@@ -51,6 +52,8 @@ export function useProcessOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({queryKey: ["order", orderId],});
+
     },
   });
 }
@@ -65,6 +68,8 @@ export function useDeliverOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({queryKey: ["order", orderId],});
+
     },
   });
 }
@@ -79,6 +84,8 @@ export function usePendingOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({queryKey: ["order", orderId],});
+
     },
   });
 }

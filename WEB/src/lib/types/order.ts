@@ -12,5 +12,6 @@ export type OrderDto = {
   shippingAddress: string;
   products: ProductOrderItemDto[];
   totalPrice: string;
+  orderStatus: string;
   createdAt: string;
 };

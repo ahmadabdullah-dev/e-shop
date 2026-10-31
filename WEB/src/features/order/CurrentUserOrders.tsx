@@ -42,7 +42,7 @@ function OrderCard({ order }: { order: OrderDto }) {
     <Card variant="outlined">
       <CardActionArea
         component={Link}
-        to={`/orders/${order.id}`}
+        to={`/order/${order.id}`}
         sx={{
           p: 2.5,
           display: "flex",

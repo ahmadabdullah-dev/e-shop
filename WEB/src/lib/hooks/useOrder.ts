@@ -62,6 +62,7 @@ export function useCancelOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+       await queryClient.invalidateQueries({ queryKey: ["order",orderId] });
     },
   });
 }
