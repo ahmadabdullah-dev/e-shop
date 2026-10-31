@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 
 import { useGetOrderById } from "../../lib/hooks/useOrder";
+import OrderOptions from "./OrderOptions";
 
 export default function OrderDetails() {
   const { id } = useParams<{ id: string }>();
@@ -51,24 +52,21 @@ console.log(order);
             <Typography variant="h3" component="h1">
               Order #{order?.id}
             </Typography>
-
             <Typography variant="h4" sx={{ fontWeight: 700 }}>
               {order?.totalPrice != null
                 ? `$${Number(order.totalPrice).toFixed(2)}`
                 : "—"}
             </Typography>
-
             <Divider />
-
             <Typography sx={{ color: "text.secondary" }}>
               Ship to: {order?.shippingAddress || "—"}
             </Typography>
-
             {order?.createdAt && (
               <Typography sx={{ color: "text.secondary" }}>
                 Placed on {new Date(order.createdAt).toLocaleDateString()}
               </Typography>
             )}
+            <OrderOptions orderId= {order?.id ?? ""} />
           </Box>
         </Grid>
       </Grid>

@@ -33,7 +33,7 @@ export function useShipOrder(orderId: string) {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await agent.patch(`/Order/ship-order", ${orderId}`);
+      const response = await agent.patch(`/Admin/ship-order/${orderId}`);
       return response.data;
     },
     onSuccess: async () => {
@@ -46,7 +46,7 @@ export function useProcessOrder(orderId: string) {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await agent.patch(`/Order/process-order", ${orderId}`);
+      const response = await agent.patch(`/Admin/process-order/${orderId}`);
       return response.data;
     },
     onSuccess: async () => {
@@ -54,12 +54,27 @@ export function useProcessOrder(orderId: string) {
     },
   });
 }
+
 export function useDeliverOrder(orderId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async () => {
-      const response = await agent.patch(`/Order/deliver-order", ${orderId}`);
+      const response = await agent.patch(`/Admin/deliver-order/${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
+  });
+}
+
+export function usePendingOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/pending-order/${orderId}`);
       return response.data;
     },
     onSuccess: async () => {

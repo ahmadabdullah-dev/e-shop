@@ -4,16 +4,16 @@ import agent from "../api/agent";
 import type { PaginatedList, PaginationParams } from "../types/common";
 
 export const useCreateOrder = () => {
-    const queryClient = useQueryClient();
-  
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (dto: CreateOrderDto) => {
       const response = await agent.post("/Order/create", dto);
       return response.data;
     },
-    onSuccess: async() => {
-          await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
-    }
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+    },
   });
 };
 export function useGetCurrentUserOrders(pagination: PaginationParams) {
@@ -44,7 +44,7 @@ export function useGetAllOrders(pagination: PaginationParams) {
 }
 export function useGetOrderById(orderId: string) {
   return useQuery({
-    queryKey: ["order", orderId ],
+    queryKey: ["order", orderId],
     queryFn: async () => {
       const response = await agent.get<OrderDto>(`Order/order/${orderId}`);
       return response.data;
@@ -57,7 +57,7 @@ export function useCancelOrder(orderId: string) {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await agent.patch(`/Order/cancel-order", ${orderId}`);
+      const response = await agent.patch(`/Order/cancel-order/${orderId}`);
       return response.data;
     },
     onSuccess: async () => {
