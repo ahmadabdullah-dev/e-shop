@@ -22,6 +22,8 @@ import {
   useShipOrder,
 } from "../../lib/hooks/useAdmin";
 
+import { useCurrentUser } from "../../lib/hooks/useUser";
+
 type Toast = { text: string; type: "success" | "error" };
 
 const getErrorMessage = (err: unknown) => {
@@ -37,38 +39,48 @@ const getSuccessMessage = (data: unknown) =>
 export default function OrderOptions({ orderId }: { orderId: string }) {
   const [toast, setToast] = useState<Toast | null>(null);
 
-  const actions = [
+  const { data: user } = useCurrentUser(); 
+  const isAdmin = user?.role?.toLowerCase() === "admin";
+
+  const allActions = [
     {
       label: "Pending",
       icon: <HourglassEmptyIcon />,
       color: "warning",
+      adminOnly: true,
       mutation: usePendingOrder(orderId),
     },
     {
       label: "Process",
       icon: <SettingsIcon />,
       color: "info",
+      adminOnly: true,
       mutation: useProcessOrder(orderId),
     },
     {
       label: "Ship",
       icon: <LocalShippingIcon />,
       color: "primary",
+      adminOnly: true,
       mutation: useShipOrder(orderId),
     },
     {
       label: "Deliver",
       icon: <CheckCircleIcon />,
       color: "success",
+      adminOnly: true,
       mutation: useDeliverOrder(orderId),
     },
     {
       label: "Cancel",
       icon: <CancelIcon />,
       color: "error",
+      adminOnly: false,
       mutation: useCancelOrder(orderId),
     },
   ] as const;
+
+  const actions = allActions.filter((a) => isAdmin || !a.adminOnly);
 
   const busy = actions.some((a) => a.mutation.isPending);
 
@@ -82,7 +94,7 @@ export default function OrderOptions({ orderId }: { orderId: string }) {
   return (
     <Box>
       <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
-        Update order status
+        {isAdmin ? "Update order status" : "Order actions"}
       </Typography>
 
       <Stack spacing={1.5}>
