@@ -22,4 +22,8 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     {
         return await DbSet.AnyAsync(x => x.Id == orderId, ct);
     }
+    public async override Task<Order?> GetByIdAsync(string id, CancellationToken ct = default)
+    {
+        return await DbSet.AsNoTracking().Include(o => o.Products).FirstOrDefaultAsync(x => x.Id == id, ct);
+    }
 }
