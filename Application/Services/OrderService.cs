@@ -122,12 +122,6 @@ public class OrderService : IOrderService
             if (order is null || (order.OrderedUserId != currentUserId && !isAdmin))
                 return Result<string>.Failure("Order not found.", 404);
 
-            if (order.OrderStatus == OrderStatuses.CANCELLED)
-                return Result<string>.Failure("Order is already cancelled.", 409);
-
-            if (order.OrderStatus is OrderStatuses.SHIPPED or OrderStatuses.DELIVERED)
-                return Result<string>.Failure("Order can no longer be cancelled.", 409);
-
             order.OrderStatus = OrderStatuses.CANCELLED;
             await _orderRepository.SaveChangesAsync(ct);
 
@@ -159,12 +153,6 @@ public class OrderService : IOrderService
 
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
-
-            if (order.OrderStatus == OrderStatuses.CANCELLED)
-                return Result<string>.Failure("Cancelled orders cannot be shipped.", 409);
-
-            if (order.OrderStatus is OrderStatuses.SHIPPED or OrderStatuses.DELIVERED)
-                return Result<string>.Failure($"Order is already {order.OrderStatus} and cannot be shipped again.", 409);
 
             order.OrderStatus = OrderStatuses.SHIPPED;
             await _orderRepository.SaveChangesAsync(ct);
@@ -198,12 +186,6 @@ public class OrderService : IOrderService
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
 
-            if (order.OrderStatus == OrderStatuses.CANCELLED)
-                return Result<string>.Failure("Cancelled orders cannot be processed.", 409);
-
-            if (order.OrderStatus != OrderStatuses.PENDING)
-                return Result<string>.Failure($"Order is already {order.OrderStatus} and cannot be processed.", 409);
-
             order.OrderStatus = OrderStatuses.PROCESSING;
             await _orderRepository.SaveChangesAsync(ct);
 
@@ -236,15 +218,6 @@ public class OrderService : IOrderService
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
 
-            if (order.OrderStatus == OrderStatuses.CANCELLED)
-                return Result<string>.Failure("Cancelled orders cannot be delivered.", 409);
-
-            if (order.OrderStatus == OrderStatuses.DELIVERED)
-                return Result<string>.Failure("Order has already been delivered.", 409);
-
-            if (order.OrderStatus != OrderStatuses.SHIPPED)
-                return Result<string>.Failure($"Order is {order.OrderStatus} and must be shipped before it can be delivered.", 409);
-
             order.OrderStatus = OrderStatuses.DELIVERED;
             await _orderRepository.SaveChangesAsync(ct);
 
@@ -276,18 +249,6 @@ public class OrderService : IOrderService
 
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
-
-            if (order.OrderStatus == OrderStatuses.CANCELLED)
-                return Result<string>.Failure("Cancelled orders cannot be pending.", 409);
-
-            if (order.OrderStatus == OrderStatuses.PENDING)
-                return Result<string>.Failure("Order has already been pendinged.", 409);
-
-            if ( order.OrderStatus ==  OrderStatuses.SHIPPED)
-                return Result<string>.Failure($"Orders in '{order.OrderStatus}' status cannot be set to pending.", 409);
-          
-            if (order.OrderStatus == OrderStatuses.DELIVERED)
-                return Result<string>.Failure($"Order is already deliveredd.", 409);
 
             order.OrderStatus = OrderStatuses.PENDING;
             await _orderRepository.SaveChangesAsync(ct);
