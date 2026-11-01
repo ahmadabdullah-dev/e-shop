@@ -123,6 +123,8 @@ public class OrderService : IOrderService
                 return Result<string>.Failure("Order not found.", 404);
 
             order.OrderStatus = OrderStatuses.CANCELLED;
+            _orderRepository.Update(order);
+
             await _orderRepository.SaveChangesAsync(ct);
 
             return Result<string>.Success("Order cancelled successfully.");
@@ -155,6 +157,8 @@ public class OrderService : IOrderService
                 return Result<string>.Failure("Order not found.", 404);
 
             order.OrderStatus = OrderStatuses.SHIPPED;
+            _orderRepository.Update(order);
+
             await _orderRepository.SaveChangesAsync(ct);
 
             return Result<string>.Success("Order shipped successfully.");
@@ -187,6 +191,7 @@ public class OrderService : IOrderService
                 return Result<string>.Failure("Order not found.", 404);
 
             order.OrderStatus = OrderStatuses.PROCESSING;
+            _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync(ct);
 
             return Result<string>.Success("Order is now being processed.");
@@ -219,6 +224,8 @@ public class OrderService : IOrderService
                 return Result<string>.Failure("Order not found.", 404);
 
             order.OrderStatus = OrderStatuses.DELIVERED;
+
+            _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync(ct);
 
             return Result<string>.Success("Order delivered successfully.");
@@ -251,6 +258,8 @@ public class OrderService : IOrderService
                 return Result<string>.Failure("Order not found.", 404);
 
             order.OrderStatus = OrderStatuses.PENDING;
+            _orderRepository.Update(order);
+
             await _orderRepository.SaveChangesAsync(ct);
 
             return Result<string>.Success("Order pendinged successfully.");
