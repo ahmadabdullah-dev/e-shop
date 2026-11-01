@@ -14,7 +14,7 @@ export const useLoginUser = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      navigate("/dashboard");
+      navigate("/products");
     },
   });
 };
@@ -64,12 +64,18 @@ export const useLogout = () => {
   });
 };
 export const useConfirmEmailAsync = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
   return useMutation({
     mutationFn: async (code: string) => {
       const response = await agent.patch("/auth/confirm-email", null, {
         params: { code },
       });
       return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.removeQueries({ queryKey: ["currentUser"] });
+      navigate("/");
     },
   });
 };

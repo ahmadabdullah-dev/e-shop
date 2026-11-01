@@ -38,7 +38,6 @@ export default function LoginForm() {
     loginAsync.mutateAsync(creds, {
       onSuccess: () => {
         reset();
-        navigate("/dashboard");
       },
       onError: () => {
         resetField("password");
