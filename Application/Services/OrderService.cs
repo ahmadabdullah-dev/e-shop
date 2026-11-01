@@ -122,6 +122,9 @@ public class OrderService : IOrderService
             if (order is null || (order.OrderedUserId != currentUserId && !isAdmin))
                 return Result<string>.Failure("Order not found.", 404);
 
+            if(order.OrderStatus == OrderStatuses.CANCELLED)
+                return Result<string>.Failure("Order is already cancelled.", 400);
+
             order.OrderStatus = OrderStatuses.CANCELLED;
             _orderRepository.Update(order);
 
@@ -155,6 +158,9 @@ public class OrderService : IOrderService
 
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
+
+            if(order.OrderStatus == OrderStatuses.SHIPPED)
+                return Result<string>.Failure("Order is already shipped.", 400);
 
             order.OrderStatus = OrderStatuses.SHIPPED;
             _orderRepository.Update(order);
@@ -190,6 +196,9 @@ public class OrderService : IOrderService
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
 
+            if(order.OrderStatus == OrderStatuses.PENDING)
+                return Result<string>.Failure("Order is already proccessing.", 400);
+          
             order.OrderStatus = OrderStatuses.PROCESSING;
             _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync(ct);
@@ -222,6 +231,9 @@ public class OrderService : IOrderService
 
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
+
+            if(order.OrderStatus == OrderStatuses.DELIVERED)
+                return Result<string>.Failure("Order is already delivered.", 400);
 
             order.OrderStatus = OrderStatuses.DELIVERED;
 
@@ -256,6 +268,9 @@ public class OrderService : IOrderService
 
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
+
+            if(order.OrderStatus == OrderStatuses.PENDING)
+                return Result<string>.Failure("Order is already pending.", 400);
 
             order.OrderStatus = OrderStatuses.PENDING;
             _orderRepository.Update(order);
