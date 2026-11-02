@@ -81,7 +81,7 @@ export default function ProductDetails() {
         }}
       >
         <Button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/products")}
           variant="text"
           startIcon={<ArrowBackIcon />}
           sx={{ px: 0, color: "text.secondary" }}
