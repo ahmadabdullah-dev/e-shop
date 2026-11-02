@@ -13,7 +13,6 @@ public static class DependencyInjection
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
-        services.AddScoped<IAdminService, AdminService>();
 
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
         services.Configure<CloudinaryConfigurations>(configuration.GetSection("CloudinaryConfigurations"));
