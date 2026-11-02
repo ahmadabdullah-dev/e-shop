@@ -12,6 +12,7 @@ import type {
 } from "../types/product";
 import type { PaginatedList, PaginationParams } from "../types/common";
 import { useNavigate } from "react-router";
+import { useBasket } from "./useBasket";
 
 export function useGetAllProducts(pagination: PaginationParams) {
   return useQuery({
@@ -63,8 +64,9 @@ export const useUpdateProduct = () => {
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, dto) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", dto.id] }); 
     },
   });
 };
@@ -85,17 +87,18 @@ export const useAddProduct = () => {
 };
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
+    const { removeFromBasket } = useBasket();
+
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await agent.delete<string>(
-        `/Product/product/${id}`,
-      );
+      const response = await agent.delete<string>(`/Product/product/${id}`);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      removeFromBasket(id); 
       navigate("/products");
     },
   });
