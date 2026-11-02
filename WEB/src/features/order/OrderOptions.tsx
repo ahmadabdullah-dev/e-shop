@@ -15,12 +15,11 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useCancelOrder } from "../../lib/hooks/useOrder";
-import {
-  useDeliverOrder,
-  usePendingOrder,
+import { useDeliverOrder, 
+  usePendingOrder, 
   useProcessOrder,
-  useShipOrder,
-} from "../../lib/hooks/useAdmin";
+useShipOrder
+ } from "../../lib/hooks/useOrder";
 
 import { useCurrentUser } from "../../lib/hooks/useUser";
 

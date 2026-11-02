@@ -15,7 +15,7 @@ import {
 import {
   useGetProductById,
 } from "../../lib/hooks/useProduct";
-import { useUpdateProduct } from "../../lib/hooks/useAdmin";
+import { useUpdateProduct } from "../../lib/hooks/useProduct";
 type FormValues = {
   name: string;
   description: string;

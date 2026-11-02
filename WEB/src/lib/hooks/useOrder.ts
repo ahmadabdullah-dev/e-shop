@@ -34,7 +34,7 @@ export function useGetAllOrders(pagination: PaginationParams) {
     queryKey: ["all-orders", pagination],
     queryFn: async () => {
       const response = await agent.get<PaginatedList<OrderDto>>(
-        "Admin/all-orders",
+        "Order/all-orders",
         { params: pagination },
       );
       return response.data;
@@ -62,7 +62,65 @@ export function useCancelOrder(orderId: string) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
-       await queryClient.invalidateQueries({ queryKey: ["order",orderId] });
+      await queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+    },
+  });
+}
+export function useShipOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/ship-order/${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+    },
+  });
+}
+export function useProcessOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/process-order/${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+    },
+  });
+}
+
+export function useDeliverOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/deliver-order/${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+    },
+  });
+}
+
+export function usePendingOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await agent.patch(`/Order/pending-order/${orderId}`);
+      return response.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["all-orders"] });
+      await queryClient.invalidateQueries({ queryKey: ["order", orderId] });
     },
   });
 }
