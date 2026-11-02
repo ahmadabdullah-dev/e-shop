@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { IconButton } from "@mui/material"; 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import DeleteProduct from "./DeleteProduct";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -82,6 +83,7 @@ export default function ProductDetails() {
           >
             Update Product
           </Button>
+            <DeleteProduct id={product.id} />
         </Box>
       )}
       <Grid container spacing={{ xs: 4, md: 8 }}>

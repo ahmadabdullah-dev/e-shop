@@ -1,4 +1,9 @@
-import {  useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueries,
+  useQueryClient,
+  useMutation,
+} from "@tanstack/react-query";
 import agent from "../api/agent";
 import type {
   AddProductDto,
@@ -6,6 +11,7 @@ import type {
   UpdateProductDto,
 } from "../types/product";
 import type { PaginatedList, PaginationParams } from "../types/common";
+import { useNavigate } from "react-router";
 
 export function useGetAllProducts(pagination: PaginationParams) {
   return useQuery({
@@ -34,12 +40,14 @@ export function useGetProductById(id: string) {
   });
 }
 
-
 export function useGetProductsByIds(ids: string[]) {
   return useQueries({
     queries: ids.map((id) => ({
       queryKey: ["products", id],
-      queryFn: async () => agent.get<ProductDto>(`/Product/${encodeURIComponent(id)}`).then((res) => res.data),
+      queryFn: async () =>
+        agent
+          .get<ProductDto>(`/Product/${encodeURIComponent(id)}`)
+          .then((res) => res.data),
       staleTime: 5 * 60 * 1000,
       retry: false,
     })),
@@ -62,12 +70,33 @@ export const useUpdateProduct = () => {
 };
 
 export const useAddProduct = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (dto: AddProductDto) => {
       const response = await agent.post("/Product/add-product", dto, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+};
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await agent.delete<string>(
+        `/Product/product/${id}`,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      navigate("/products");
     },
   });
 };
