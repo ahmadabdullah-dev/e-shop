@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
@@ -24,5 +25,11 @@ public class ProductController : BaseApiController
         var result = await _productService.GetProductByIdAsync(id, ct);
         return HandleResult(result);
     }
-  
+    [Authorize(Policy = "requireAdminRole")]
+    [HttpDelete("product/{id}")]
+    public async Task<IActionResult> DeleteProduct(string id, CancellationToken ct)
+    {
+        var result = await _productService.DeleteProductAsync(id, ct);
+        return HandleResult(result);
+    }
 }

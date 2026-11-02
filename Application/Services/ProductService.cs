@@ -162,4 +162,35 @@ public class ProductService : IProductService
     {
        return await _productRepository.GetPricesByIdsAsync(ids, ct);
     }
+    public async Task<Result<string>> DeleteProductAsync(string id, CancellationToken ct)
+    {
+        var product = await _productRepository.GetByIdAsync(id, ct);
+        
+        if (product is null)
+            return Result<string>.Failure("Product not found", 404);
+       
+        if (!string.IsNullOrEmpty(product.ImagePublicId))
+        {
+            var deleteResult = await _fileService.DeleteFile(product.ImagePublicId);
+          
+            if (!deleteResult.IsSuccess)
+                _logger.LogWarning($"Failed to delete image {product.ImagePublicId}");
+        }
+        try
+        {
+            _productRepository.Remove(product);
+            await _productRepository.SaveChangesAsync(ct);
+        }
+        catch(OperationCanceledException)
+        {
+            _logger.LogWarning($"Operation canceled while deleting product {id}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to delete product {id}");
+            throw;
+        }
+        return Result<string>.Success("Product deleted successfully");
+    }
 }
