@@ -196,8 +196,8 @@ public class OrderService : IOrderService
             if (order is null)
                 return Result<string>.Failure("Order not found.", 404);
 
-            if(order.OrderStatus == OrderStatuses.PENDING)
-                return Result<string>.Failure("Order is already proccessing.", 400);
+            if(order.OrderStatus == OrderStatuses.PROCESSING)
+                return Result<string>.Failure("Order is already processing.", 400);
           
             order.OrderStatus = OrderStatuses.PROCESSING;
             _orderRepository.Update(order);
