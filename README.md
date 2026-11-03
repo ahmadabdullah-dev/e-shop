@@ -1,7 +1,5 @@
 # E Shop
-A complete e-shop platform allowing users to browse products, manage shopping baskets, and place orders. Features user registration with email verification, secure authentication, password recovery, and profile management. Admins can manage products and view all orders. Includes file upload for product images, email notifications for account verification, and role-based access control for different user types.
-
-Feedback submitted
+E-shop platform allowing users to browse products, manage shopping baskets, and place orders. Features user registration with email verification, secure authentication, password recovery, and profile management. Admins can manage products and view all orders. Includes file upload for product images, email notifications for account verification, and role-based access control for different user types.
 
 ## Tech Stack
 - **WEB:** React, TypeScript, TanStack Query, Axios, MUI, React Router
