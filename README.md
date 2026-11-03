@@ -1,22 +1,176 @@
 # E Shop
+E-commerce app with React frontend and ASP.NET Core backend. Users can browse products, manage a basket, place orders, and track status. Admins manage products and orders.
 
 ## Tech Stack
 - **WEB:** React, TypeScript, TanStack Query, Axios, MUI, React Router
 - **API:** ASP.NET Web API, C#
 - **Auth:** ASP.NET Identity, Cookie-based Authentication, Role-based Authorization
 - **ORM:** Entity Framework, Code First, BaseEntity
-
-## Features 
+## Features
+ 
+### Backend
+ 
 - EmailService
+  - SendEmailAsync
+  - SendCodeAsync
 - DataSeeder
-- RateLimiter(Auth)
-- Cors
-- AuthService (Login, Logout, Register, ConfirmEmail, ResendEmailConfirmationCode, ForgetPassword, UpdatePassword)
-- FileService (UploadImage, UploadRawFile, DeleteFile)
-- Productervice(AddOroduct, GetAllProducts, GetPRoductById, UpdateProduct)
-- UserService(GetCurrentUser, UpdateCurrentUser, RequestUpdateCurrentEmail, UpdateCurrentEmail, ResendUpdateCurrentEmailConfirmationCode, UpdateCurrentUserName, DeleteCurrentUser)
+  - Seed
+  - SeedRoles
+  - SeedUsers
+- RateLimiter
+  - authLimiter
+  - notificationLimiter
+- CORS
+  - AllowWeb policy
+- AuthService
+  - LoginAsync
+  - RegisterAsync
+  - LogoutAsync
+  - ConfirmEmailAsync
+  - ResendEmailConfirmationCodeAsync
+  - ForgetPasswordAsync
+  - ResetPasswordAsync
+- FileService
+  - UploadImage
+  - UploadRawFile
+  - DeleteFile
+- ProductService
+  - AddProductAsync
+  - GetAllProductsAsync
+  - GetProductByIdAsync
+  - UpdateProductAsync
+  - DeleteProductAsync
+  - IsProductExistsByIdAsync
+  - GetPricesByIdsAsync
 - OrderService
-- BaseketService
+  - CreateOrderAsync
+  - GetAllOrdersAsync
+  - GetCurrentUserOrdersAsync
+  - CancelOrderAsync
+  - ShipOrderAsync
+  - ProcessOrderAsync
+  - DeliverOrderAsync
+  - PendingOrderAsync
+  - GetOrderDetailsAsync
+- UserService
+  - GetCurrentUserAsync
+  - UpdateCurrentUserAsync
+  - RequestUpdateCurrentEmailAsync
+  - UpdateCurrentEmailAsync
+  - ResendUpdateCurrentEmailConfirmationCodeAsync
+  - UpdateCurrentUserNameAsync
+  - DeleteCurrentUserAsync
+- Repository<T>
+  - GetByIdAsync
+  - GetAllAsync
+  - AddAsync
+  - Update
+  - Remove
+  - SaveChangesAsync
+- ProductRepository
+  - IsProductExistsByIdAsync
+  - GetPricesByIdsAsync
+- OrderRepository
+  - GetAllAsync
+  - GetUserOrdersByUserIdAsync
+  - IsOrderExistsByIdAsync
+  - GetByIdAsync
+- UserRepository
+- ASP.NET Identity
+  - SignInManager
+  - UserManager
+  - RoleManager
+- ApplicationDbContext
+- Scalar API documentation
+- Helpers
+  - ServiceHelper
+  - PagedList
+  - PaginationParams
+  - Result<T>
+- Attributes
+  - ConfirmedEmailAttribute
+  - SkipConfirmedEmailAttribute
+- BaseApiController
+  - HandleResult
+ 
+### Frontend
+ 
+- AuthForms
+  - LoginForm
+  - RegisterForm
+  - ForgetPasswordForm
+  - ResetPasswordForm
+  - ConfirmEmailForm
+- Pages
+  - LandingPage
+  - ProductsDashboard
+  - Product
+  - MyProfile
+  - UserSettings
+  - CurrentBasket
+  - CreateOrder
+  - CurrentUserOrders
+  - OrderDetails
+  - UpdateProduct
+  - AddProductForm
+  - AdminDashboard
+  - ErrorPage
+  - NotFound
+- Layout
+  - App
+  - Header
+  - Footer
+  - TemporaryDrawer
+  - AppLogoWithName
+- Guards
+  - RequireAuth
+  - RequireConfirmedEmail
+  - RequireAdminRole
+- AuthHooks
+  - useLoginUser
+  - useRegisterUser
+  - useLogout
+  - useConfirmEmailAsync
+  - useResendEmailConfirmationCodeAsync
+  - useForgetPasswordAsync
+  - useResetPasswordAsync
+- ProductHooks
+  - useGetAllProducts
+  - useGetProductById
+  - useGetProductsByIds
+  - useAddProduct
+  - useUpdateProduct
+  - useDeleteProduct
+- OrderHooks
+  - useCreateOrder
+  - useGetCurrentUserOrders
+  - useGetAllOrders
+  - useGetOrderById
+  - useCancelOrder
+  - useShipOrder
+  - useProcessOrder
+  - useDeliverOrder
+  - usePendingOrder
+- UserHooks
+  - useCurrentUser
+  - useUpdateCurrentUser
+  - useRequestUpdateCurrentEmail
+  - useUpdateCurrentEmail
+  - useResendCurrentEmailConfirmationCode
+  - useUpdateCurrentUserName
+- BasketHook
+  - useBasket
+  - addToBasket
+  - setQuantity
+  - removeFromBasket
+  - getQuantity
+  - clearBasket
+- API Layer
+  - Axios agent
+  - Response interceptor
+- Config
+  - MUI dark theme
+ 
 
 ## Architechure(Layered On API)
 - **WEB:** UI Components, Hooks, Routes, Call APIs
